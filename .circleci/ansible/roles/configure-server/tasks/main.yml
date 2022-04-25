@@ -1,0 +1,39 @@
+# Install Python.
+# Using Python Docker image, so not needed
+
+#Update/upgrade packages.
+- name: "update apt packages."
+  become: true
+  apt:
+    update_cache: yes
+
+- name: "upgrade packages"
+  become: true
+  apt:
+    upgrade: yes
+
+#Install nodejs, npm, and pm2
+
+- name: "Install nodejs"
+  become: true
+  apt:
+    global: yes
+    update_cache: yes
+    name: nodejs
+    state: present
+
+- name: "Install npm"
+  become: true
+  apt:
+    global: yes
+    update_cache: yes
+    name: npm
+    state: present
+
+- name: "install pm2"
+  become: true
+  npm:
+    name: pm2
+    global: yes
+    production: yes
+    state: present
