@@ -339,8 +339,18 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add --update curl nodejs npm
-            pip install awscli        
+            apk update
+            apk upgrade
+            apk add --update unzip curl
+            /usr/local/bin/python -m pip install --upgrade pip
+            apk add --update nodejs nodejs-npm
+            pip install awscli --upgrade
+      - run:
+          name: Check Versions
+          command: |
+            node --version
+            npm --version
+            aws --version
       - run:
           name: Backend smoke test.
           command: |
