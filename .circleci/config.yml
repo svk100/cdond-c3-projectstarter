@@ -208,7 +208,6 @@ jobs:
           command: |
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
 #      - destroy-environment
-#          when: on_fail
 
   run-migrations:
     docker:
@@ -246,9 +245,7 @@ jobs:
           paths:
             - project/.circleci/ansible/migstat.txt
 #      - revert_migrations
-#          when: on_fail
       - destroy-environment
-          when: on_fail
 
   deploy-frontend:
     docker:
@@ -300,10 +297,7 @@ jobs:
           command: |
             aws s3 rm --recursive s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}
 #      - revert-migrations:
-#          when: on_fail
       - destroy-environment
-          when: on_fail
-
 
   deploy-backend:
     docker:
@@ -346,9 +340,7 @@ jobs:
             ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
       #- revert-migrations:
-#          when: on_fail
       - destroy-environment
-          when: on_fail
 
 
 workflows:
