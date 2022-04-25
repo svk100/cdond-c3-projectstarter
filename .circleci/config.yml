@@ -17,20 +17,16 @@ commands:
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
-    parameters:
-      workflow_id:
-        type: string
     steps:
       - attach_workspace:
           at: ~/
-      - restore_cache:
-          keys: [backend-build]
       - run:
           name: Status of migration
           command:
             echo "migration status"
             cat .circleci/ansible/migstat.txt
             status=$( cat .circleci/ansible/migstat.txt )
+            echo $status
       - run:
           name: Revert migrations
           when: on_fail
