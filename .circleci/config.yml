@@ -367,7 +367,7 @@ jobs:
              else
                  return 1
              fi
-       - revert-migrations
+      - revert-migrations
 
   cloudfront-update:
     docker:
