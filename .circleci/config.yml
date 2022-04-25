@@ -28,7 +28,7 @@ commands:
             cat .circleci/ansible/migstat.txt
             status=$( cat .circleci/ansible/migstat.txt )
             echo $status
-            if [ $status -eq 0 ];
+            if [ $status -eq 1 ];
             then
               cd ~/backend
               npm install
