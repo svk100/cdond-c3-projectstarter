@@ -208,11 +208,12 @@ jobs:
           command: |
             ansible-playbook -i .circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
 #      - destroy-environment
+#          when: on_fail
 
   run-migrations:
     docker:
       # Docker image here that supports NodeJS
-      - image: circleci/node:13.8.0
+      - image: circleci/node:14.18.1
     steps:
       - checkout
       - restore_cache:
@@ -222,25 +223,12 @@ jobs:
           no_output_timeout: 10m
           command: |
             cd backend
-
-            echo ENVIRONMENT=production > ".env"
-            echo TYPEORM_CONNECTION=postgres >> ".env"
-            echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> ".env"
-            echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> ".env"
-            echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> ".env"
-            echo NODE_ENV=production >> ".env"
-            echo TYPEORM_HOST=$TYPEORM_HOST >> ".env"
-            echo TYPEORM_PORT=$TYPEORM_PORT >> ".env"
-            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
-            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
-            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
-
-            cat .env
-
             npm install
+            npm run migrations:revert
             echo "Backend migration start"
             npm run migrations > migrations_dump.txt
             echo "Backend migration end"
+            cat migrations_dump.txt
       - run:
           name: Send migration results to memstash
           # using workspace since memstash is not available
@@ -255,7 +243,8 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/migstat.txt
-      #- revert_migrations
+#      - revert_migrations
+#          when: on_fail
 
   deploy-frontend:
     docker:
@@ -306,7 +295,8 @@ jobs:
           when: on_fail
           command: |
             aws s3 rm --recursive s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}
-      # - revert-migrations:
+#      - revert-migrations:
+#          when: on_fail
 
   deploy-backend:
     docker:
@@ -349,6 +339,7 @@ jobs:
             ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
       #- revert-migrations:
+#          when: on_fail
 
 workflows:
   default:
