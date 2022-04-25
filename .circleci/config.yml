@@ -21,17 +21,14 @@ commands:
       - attach_workspace:
           at: ~/
       - run:
-          name: Status of migration
-          command:
+          name: Revert migrations
+          when: on_fail
+          command: |
             echo "migration status"
             cat .circleci/ansible/migstat.txt
             status=$( cat .circleci/ansible/migstat.txt )
             echo $status
-      - run:
-          name: Revert migrations
-          when: on_fail
-          command: |
-            if(( $status == '0' ));
+            if(( $status -eq 0 ));
             then
             cd ~/backend
             npm install
@@ -329,6 +326,8 @@ jobs:
       - image: python:3.7-alpine3.11 
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/
       - run:
           name: Install dependencies
           command: |
@@ -353,8 +352,10 @@ jobs:
             if 
                curl -s http://${BACKEND_IP}:3030/api/status | grep "ok"
             then
+               echo '0' > .circleci/ansible/migstat.txt
                exit 0
             else
+               echo '1' > .circleci/ansible/migstat.txt
                exit 1
             fi  
       - run:
@@ -365,10 +366,16 @@ jobs:
              curl -s ${URL} | grep "Welcome"
              if curl -s ${URL} | grep "Welcome"
              then
+                 echo '1' > .circleci/ansible/migstat.txt
                  return 1
              else
+                 echo '1' > .circleci/ansible/migstat.txt
                  return 1
              fi
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/.circleci/ansible/migstat.txt
       - revert-migrations
 
   cloudfront-update:
