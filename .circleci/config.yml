@@ -332,7 +332,6 @@ jobs:
       #- revert-migrations:
       - destroy-environment
 
-# CHECK THE NEXT TWO JOBS **********************
   smoke-test:
     docker:
       - image: python:3.7-alpine3.11 
@@ -360,7 +359,8 @@ jobs:
           name: Frontend smoke test.
           command: |
              URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"            
-             echo ${URL} 
+             echo ${URL}
+             curl -s ${URL} | grep "Welcome"
              if curl -s ${URL} | grep "Welcome"
              then
                  return 1
