@@ -209,18 +209,16 @@ jobs:
   run-migrations:
     docker:
       # Docker image here that supports NodeJS
-      - image: circleci/node:14.18.1
+      - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: [backend-build]
       - attach_workspace:
           at: ~/
       - run:
           name: Run migrations
           no_output_timeout: 10m
           command: |
-            cd backend
+            cd ~/project/backend
             npm install
             #npm run migrations:revert
             echo "Backend migration start"
@@ -317,12 +315,12 @@ jobs:
       - run:
           name: Deploy backend
           command: |
-            cd backend
-            npm install
-            npm run build
-            cd ..
-            tar -C backend -czvf artifact.tar.gz .
-            cd .circleci/ansible
+#            cd backend
+#            npm install
+#            npm run build
+#            cd ..
+#            tar -C backend -czvf artifact.tar.gz .
+            cd ~/project/.circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             export ANSIBLE_HOST_KEY_CHECKING=False
