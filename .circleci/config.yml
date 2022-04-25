@@ -28,11 +28,11 @@ commands:
             cat .circleci/ansible/migstat.txt
             status=$( cat .circleci/ansible/migstat.txt )
             echo $status
-            if(( $status -eq 0 ));
+            if [ $status -eq 0 ];
             then
-            cd ~/backend
-            npm install
-            npm run migrations:revert
+              cd ~/backend
+              npm install
+              npm run migrations:revert
             fi
 
 jobs:
