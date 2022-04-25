@@ -10,6 +10,7 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
+            sudo apt-get -qq install awscli
             aws s3 rm --recursive s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}
             aws cloudformation delete-stack --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
             aws cloudformation delete-stack --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
@@ -236,9 +237,9 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-              echo '1' > migstat.txt
+              echo '1' > .circleci/ansible/migstat.txt
             else
-              echo '0' > migstat.txt
+              echo '0' > .circleci/ansible/migstat.txt
             fi
       - persist_to_workspace:
           root: ~/
