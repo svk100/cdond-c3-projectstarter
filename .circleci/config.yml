@@ -297,7 +297,7 @@ jobs:
           when: on_fail
           command: |
             aws s3 rm --recursive s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}
-#      - revert-migrations:
+#      - revert-migrations
       - destroy-environment
 
   deploy-backend:
@@ -329,7 +329,7 @@ jobs:
             export ANSIBLE_HOST_KEY_CHECKING=False
             ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure  
-      #- revert-migrations:
+      #- revert-migrations
       - destroy-environment
 
   smoke-test:
@@ -367,6 +367,7 @@ jobs:
              else
                  return 1
              fi
+       - revert-migrations
 
   cloudfront-update:
     docker:
@@ -374,7 +375,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install dependencies # probably not needed
+          name: Install dependencies
           command: |
             yum install -y tar gzip curl
             curl -sL https://rpm.nodesource.com/setup_10.x | bash -
