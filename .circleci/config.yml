@@ -215,7 +215,6 @@ jobs:
           name: Run migrations
           no_output_timeout: 10m
           command: |
-            pip install awscli
             cd ~/project/backend
             npm install
             #npm run migrations:revert
