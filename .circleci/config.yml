@@ -30,7 +30,7 @@ commands:
             echo $status
             if [ $status -eq 1 ];
             then
-              cd ~/backend
+              cd ~/project/backend
               npm install
               npm run migrations:revert
             fi
