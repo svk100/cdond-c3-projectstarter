@@ -1,6 +1,7 @@
 version: 2.1
 orbs: 
   slack: circleci/slack@4.9.3
+  aws-cli: circleci/aws-cli@2.0.3
 
 commands:
   destroy-environment:
@@ -10,8 +11,6 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            pip install awscli
-            awscli --version
             aws s3 rm --recursive s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}
             aws cloudformation delete-stack --stack-name "udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}"
             aws cloudformation delete-stack --stack-name "udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
